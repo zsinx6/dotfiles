@@ -1,0 +1,26 @@
+search I
+search Drop
+rename Android
+mount /dev/sda5 /mnt
+h
+help
+search window
+search windows
+search Págin
+open_with hexdump -c
+
+open_with vim
+open_with ~/Downloads/
+rename sd
+shell 
+shell
+?
+e
+open_withqqqqq 
+open_with 
+terminator
+!terminator
+search maran
+search ////////////////
+search chi
+delete
