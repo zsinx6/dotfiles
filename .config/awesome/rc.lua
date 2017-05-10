@@ -55,7 +55,7 @@ local function run_once(cmd_arr)
     end
 end
 
-run_once({ "urxvtd", "unclutter -root", "/home/lucas/keyboard.sh", "xset s off -dpms", "numlockx &", "dropbox &"})
+run_once({ "urxvtd", "unclutter -root", "/home/lucas/keyboard.sh", "xset s off -dpms", "numlockx &", "dropbox &", "xss-lock -- i3lock &"})
 -- }}}
 
 -- {{{ Variable definitions
@@ -476,10 +476,16 @@ globalkeys = awful.util.table.join(
             elseif string.lower(t) == 'reboot' then
                 awesome.emit_signal("exit", nil)
                 awful.util.spawn("reboot")
+            elseif string.lower(t) == 'hibernate' then
+                awful.util.spawn("systemctl hibernate")
+            elseif string.lower(t) == 'suspend' then
+                awful.util.spawn("systemctl suspend")
+            elseif string.lower(t) == 'both' then
+                awful.util.spawn("systemctl hybrid-sleep")
             end
         end,
         function (t, p, n)
-            return awful.completion.generic(t, p, n, {'no', 'NO', 'yes', 'YES', 'reboot'})
+            return awful.completion.generic(t, p, n, {'yes', 'YES', 'reboot', 'hibernate', 'both', 'suspend'})
         end) end,
         {description = "shutdown", group = "launcher"}),
     
