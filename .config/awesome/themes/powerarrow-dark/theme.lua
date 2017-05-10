@@ -90,7 +90,8 @@ theme.titlebar_maximized_button_normal_inactive = theme.dir .. "/icons/titlebar/
 local markup = lain.util.markup
 local separators = lain.util.separators
 
-net_wireless = net_widgets.wireless({interface="wlp3s0"})
+net_wireless = net_widgets.wireless({interface="wlp3s0",
+                                     onclick = "terminator -e nmtui"})
 
 -- Textclock
 

@@ -145,6 +145,7 @@ function wireless:attach(widget, args)
 	    widget:buttons(awful.util.table.join(
 	    awful.button({}, 1, function() awful.util.spawn(onclick) end)
 	    ))
+        awful.client.focus.byidx( 1)
     end
     widget:connect_signal('mouse::enter', function () wireless:show(0) end)
     widget:connect_signal('mouse::leave', function () wireless:hide() end)
