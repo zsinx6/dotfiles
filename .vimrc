@@ -99,7 +99,7 @@ set fileencodings=utf-8
 
 highlight BadWhitespace ctermbg=red guibg=red
 
-let g:ycm_global_ycm_extra_conf = '/home/lucas/.ycm_extra_conf.py'
+let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_collect_identifiers_from_tags_files = 1 " Let YCM read tags from Ctags file
 let g:ycm_use_ultisnips_completer = 1 " Default 1, just ensure
