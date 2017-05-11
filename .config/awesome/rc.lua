@@ -55,14 +55,14 @@ local function run_once(cmd_arr)
     end
 end
 
-run_once({ "urxvtd", "unclutter -root", "/home/lucas/keyboard.sh", "xset s off -dpms", "numlockx &", "dropbox &", "xss-lock -- i3lock &"})
+run_once({ "~/keyboard.sh", "xset s off -dpms", "numlockx &", "dropbox &", "xss-lock -- i3lock &"})
 -- }}}
 
 -- {{{ Variable definitions
 local chosen_theme = "powerarrow-dark"
 local modkey       = "Mod4"
 local altkey       = "Mod1"
-local terminal     = "terminator" or "urxvtc"
+local terminal     = "terminator"
 local editor       = os.getenv("EDITOR") or "nano" or "vi"
 local gui_editor   = "gvim"
 local browser      = "firefox"
