@@ -90,7 +90,7 @@ theme.titlebar_maximized_button_normal_inactive = theme.dir .. "/icons/titlebar/
 local markup = lain.util.markup
 local separators = lain.util.separators
 
-net_wireless = net_widgets.wireless({interface="wlp3s0",
+net_wireless = net_widgets.wireless({interface="wlp1s0",
                                      onclick = "terminator -e nmtui"})
 
 -- Textclock
@@ -294,7 +294,7 @@ function theme.at_screen_connect(s)
     --gears.wallpaper.centered(wallpaper, s)
 
     -- Tags
-    awful.tag(awful.util.tagnames, s, awful.layout.layouts)
+    awful.tag(awful.util.tagnames, s, awful.layout.layouts[1])
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()

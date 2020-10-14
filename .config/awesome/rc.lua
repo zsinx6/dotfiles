@@ -55,14 +55,14 @@ local function run_once(cmd_arr)
     end
 end
 
-run_once({ "~/keyboard.sh", "xset s off -dpms", "numlockx &", "dropbox &", "xss-lock -- i3lock &"})
+run_once({ "~/keyboard.sh", "xset s off -dpms", "numlockx &", "xss-lock -- i3lock &", "/usr/bin/lxpolkit"})
 -- }}}
 
 -- {{{ Variable definitions
 local chosen_theme = "powerarrow-dark"
 local modkey       = "Mod4"
 local altkey       = "Mod1"
-local terminal     = "terminator"
+local terminal     = "termite"
 local editor       = os.getenv("EDITOR") or "nano" or "vi"
 local gui_editor   = "gvim"
 local browser      = "firefox"
@@ -217,12 +217,14 @@ root.buttons(awful.util.table.join(
 globalkeys = awful.util.table.join(
     -- Take a screenshot
     -- https://github.com/copycat-killer/dots/blob/master/bin/screenshot
-    awful.key({ }, "Print", function() awful.util.spawn_with_shell("scrot /home/lucas/screenshots/%Y-%m-%d-%T-screenshot.png", false) end),
-    awful.key({ modkey, altkey }, "l", function() awful.util.spawn("i3lock", false) end),
+    awful.key({ }, "Print", function() awful.util.spawn_with_shell("scrot -u ~/screenshots/%Y-%m-%d-%T-screenshot.png -e 'xclip -selection clipboard -target image/png -i $f'", false) end),
+    --awful.key({ }, "Print", function() awful.util.spawn_with_shell("gscreenshot -c -f ~/screenshots/%Y-%m-%d-%T-screenshot.png", false) end),
+    awful.key({ modkey, altkey }, "l", function() awful.util.spawn_with_shell("xbacklight -set 0 && i3lock", false) end),
 
-    awful.key({ "Shift" }, "Print", function() awful.util.spawn_with_shell("sleep 0.5 && scrot -s ~/screenshots/%Y-%m-%d-%T-screenshot.png", false) end),
-    awful.key({}, "XF86MonBrightnessDown", function() awful.util.spawn_with_shell("xbacklight -dec 3", false) end),
-    awful.key({}, "XF86MonBrightnessUp", function() awful.util.spawn_with_shell("xbacklight -inc 3", false) end),
+    awful.key({ "Shift" }, "Print", function() awful.util.spawn_with_shell("sleep 0.2 && scrot -s ~/screenshots/%Y-%m-%d-%T-screenshot.png -e 'xclip -selection clipboard -target image/png -i $f'", false) end),
+    --awful.key({ "Shift" }, "Print", function() awful.util.spawn_with_shell("gscreenshot -s -c -f ~/screenshots/%Y-%m-%d-%T-screenshot.png", false) end),
+    awful.key({}, "XF86MonBrightnessDown", function() awful.util.spawn_with_shell("xbacklight -dec 5", false) end),
+    awful.key({}, "XF86MonBrightnessUp", function() awful.util.spawn_with_shell("xbacklight -inc 5", false) end),
 
     -- Hotkeys
     awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
@@ -390,6 +392,10 @@ globalkeys = awful.util.table.join(
             os.execute(string.format("amixer -q set %s 0%%", beautiful.volume.channel))
             beautiful.volume.update()
         end),
+
+    awful.key({}, "XF86AudioPlay", function() awful.util.spawn_with_shell("playerctl play-pause", false) end),
+    awful.key({}, "XF86AudioNext", function() awful.util.spawn_with_shell("playerctl next", false) end),
+    awful.key({}, "XF86AudioPrev", function() awful.util.spawn_with_shell("playerctl previous", false) end),
 
     -- MPD control
     awful.key({ altkey, "Control" }, "Up",
@@ -639,10 +645,6 @@ awful.rules.rules = {
     -- Titlebars
     { rule_any = { type = { "dialog", "normal" } },
       properties = { titlebars_enabled = false } },
-
-    -- Set Firefox to always map on the first tag on screen 1.
-    { rule = { class = "Firefox" },
-      properties = { screen = 1, tag = screen[1].tags[1] } },
 
     { rule = { class = "Gimp", role = "gimp-image-window" },
           properties = { maximized = true } },

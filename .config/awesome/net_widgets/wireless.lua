@@ -14,7 +14,7 @@ local function worker(args)
 
     -- Settings
     local ICON_DIR      = awful.util.getdir("config").."/"..module_path.."/net_widgets/icons/"
-    local interface     = args.interface or "wlan0"
+    local interface     = args.interface or "wlp1s0"
     local timeout       = args.timeout or 5
     local font          = "monospace" --or args.font or beautiful.font
     local popup_signal  = true --args.popup_signal or false
