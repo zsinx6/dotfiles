@@ -1,11 +1,12 @@
 [user]
-	email = lucassin_x@hotmail.com
-	name = zSinx6
+  email =  zsinx6@users.noreply.github.com
+  name = zsinx6
+  signingkey = 66F4AF542E0E9683
 [alias]
-	co = checkout
-	ci = commit
-	st = status
-	br = branch
-	hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
-	type = cat-file -t
-	dump = cat-file -p
+  co = checkout
+  ci = commit
+  st = status
+  br = branch
+  hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+  type = cat-file -t
+  dump = cat-file -p
