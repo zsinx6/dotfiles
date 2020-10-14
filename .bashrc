@@ -4,16 +4,22 @@
 
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
-export EDITOR=vim
+[[ -r "/usr/share/z/z.sh" ]] && source /usr/share/z/z.sh
+export EDITOR=nvim
 alias ls='ls --color=auto'
 alias xclip='xclip -selection c'
 PS1='[\u@\h \W]\$ '
 alias telegram='~/Downloads/Telegram/Telegram & disown; exit'
-VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
 export HISTSIZE=""
 export HISTFILESIZE=""
+HISTTIMEFORMAT="%d/%m/%Y %T "  # for e.g. “29/02/1999 23:59:59”
 export WORKON_HOME=~/.virtualenvs
-source /usr/bin/virtualenvwrapper.sh
-export DEVKITPRO=/opt/devkitPro
-export DEVKITARM=$DEVKITPRO/devkitARM
-export PATH=$PATH:$DEVKITARM/bin
+
+#pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+
+export GOPATH=$HOME/go
+
+export PATH="~/.local/bin:$PATH"
