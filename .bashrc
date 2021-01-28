@@ -15,11 +15,22 @@ export HISTFILESIZE=""
 HISTTIMEFORMAT="%d/%m/%Y %T "  # for e.g. “29/02/1999 23:59:59”
 export WORKON_HOME=~/.virtualenvs
 
-#pyenv
+# pyenv
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
 
 export GOPATH=$HOME/go
 
-export PATH="~/.local/bin:$PATH"
+# poetry
+export PATH="$HOME/.poetry/bin:$PATH"
+
+# autojump
+source /etc/profile.d/autojump.bash
+
+
+if [ -f /usr/lib/bash-git-prompt/gitprompt.sh ]; then
+  GIT_PROMPT_ONLY_IN_REPO=1
+  GIT_PROMPT_THEME=Default_Arch
+  source /usr/lib/bash-git-prompt/gitprompt.sh
+fi
