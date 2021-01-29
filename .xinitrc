@@ -5,5 +5,5 @@
 [ -f ~/.xprofile ] && source ~/.xprofile
 numlockx &
 xset r rate 200 30
-/home/lucas/keyboard.sh
+$HOME/keyboard.sh
 exec awesome
