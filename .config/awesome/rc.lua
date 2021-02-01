@@ -62,7 +62,7 @@ run_once({ "~/keyboard.sh", "xset s off -dpms", "numlockx &", "xss-lock -- i3loc
 local chosen_theme = "powerarrow-dark"
 local modkey       = "Mod4"
 local altkey       = "Mod1"
-local terminal     = "termite"
+local terminal     = "alacritty"
 local editor       = os.getenv("EDITOR") or "nano" or "vi"
 local gui_editor   = "gvim"
 local browser      = "firefox"
@@ -222,6 +222,7 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey, altkey }, "l", function() awful.util.spawn_with_shell("xbacklight -set 0 && i3lock", false) end),
 
     awful.key({ "Shift" }, "Print", function() awful.util.spawn_with_shell("sleep 0.2 && scrot -s ~/screenshots/%Y-%m-%d-%T-screenshot.png -e 'xclip -selection clipboard -target image/png -i $f'", false) end),
+    awful.key({ modkey }, "Print", function() awful.util.spawn_with_shell("sleep 0.2 && flameshot gui", false) end),
     --awful.key({ "Shift" }, "Print", function() awful.util.spawn_with_shell("gscreenshot -s -c -f ~/screenshots/%Y-%m-%d-%T-screenshot.png", false) end),
     awful.key({}, "XF86MonBrightnessDown", function() awful.util.spawn_with_shell("xbacklight -dec 5", false) end),
     awful.key({}, "XF86MonBrightnessUp", function() awful.util.spawn_with_shell("xbacklight -inc 5", false) end),
