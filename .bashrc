@@ -28,9 +28,8 @@ export PATH="$HOME/.poetry/bin:$PATH"
 # autojump
 source /etc/profile.d/autojump.bash
 
-
-if [ -f /usr/lib/bash-git-prompt/gitprompt.sh ]; then
-  GIT_PROMPT_ONLY_IN_REPO=1
-  GIT_PROMPT_THEME=Default_Arch
-  source /usr/lib/bash-git-prompt/gitprompt.sh
+if [ -f "$HOME/.bash-git-prompt/gitprompt.sh" ]; then
+    GIT_PROMPT_ONLY_IN_REPO=1
+    GIT_PROMPT_THEME=Default_Arch
+    source $HOME/.bash-git-prompt/gitprompt.sh
 fi
