@@ -219,7 +219,7 @@ globalkeys = awful.util.table.join(
     -- https://github.com/copycat-killer/dots/blob/master/bin/screenshot
     awful.key({ }, "Print", function() awful.util.spawn_with_shell("scrot -u ~/screenshots/%Y-%m-%d-%T-screenshot.png -e 'xclip -selection clipboard -target image/png -i $f'", false) end),
     --awful.key({ }, "Print", function() awful.util.spawn_with_shell("gscreenshot -c -f ~/screenshots/%Y-%m-%d-%T-screenshot.png", false) end),
-    awful.key({ modkey, altkey }, "l", function() awful.util.spawn_with_shell("xbacklight -set 0 && i3lock", false) end),
+    awful.key({ modkey, altkey }, "l", function() awful.util.spawn_with_shell("xbacklight -set 0; i3lock -n; xbacklight -set 50", false) end),
 
     awful.key({ "Shift" }, "Print", function() awful.util.spawn_with_shell("sleep 0.2 && scrot -s ~/screenshots/%Y-%m-%d-%T-screenshot.png -e 'xclip -selection clipboard -target image/png -i $f'", false) end),
     awful.key({ modkey }, "Print", function() awful.util.spawn_with_shell("sleep 0.2 && flameshot gui", false) end),
