@@ -1,0 +1,16 @@
+theme = "ayu_dark"
+
+[editor]
+line-number = "relative"
+text-width=100
+
+[editor.whitespace.render]
+# space = "all"
+tab = "all"
+newline = "none"
+
+[editor.cursor-shape]
+insert = "bar"
+
+[editor.lsp]
+display-signature-help-docs = false

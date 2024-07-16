@@ -1,0 +1,39 @@
+[language-server.gpt]
+command = "helix-gpt"
+args = ["--handler", "copilot", "--copilotApiKey", "APIKEY", "--actionTimeout", "200000", "--completionTimeout", "200000", "--fetchTimeout", "200000"]
+
+[language-server.ruff]
+command = "ruff-lsp"
+
+[[language]]
+name = "python"
+roots = ["pyproject.toml"]
+language-servers = [
+  "gpt",
+  "ruff",
+  "pylsp"
+]
+auto-format = true
+
+
+[language-server.pylsp.config.pylsp.plugins]
+flake8 = {enabled = false, ignore = ["E501"]}
+autopep8 = {enabled = false}
+mccabe = {enabled = false}
+pycodestyle = {enabled = false}
+pyflakes = {enabled = false}
+pylint = {enabled = false}
+yapf = {enabled = false}
+ruff = { enabled = false}
+
+# pyflakes = {enabled = false}
+# mccabe = {enabled = false}
+# pyls_isort = {enabled = false}
+# pycodestyle = {enabled = false, maxLineLength = 100}
+# pydocstyle = {enabled = false}
+# autopep8 = {enabled = false}
+# yapf = {enabled = false}
+# flake8 = {enabled = false}
+# pylint = {enabled = false}
+# ruff = {enabled = true, extendSelect = ["I"]}
+# # mypy = {enabled = true, live_mode = true, strict = true}
