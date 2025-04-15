@@ -10,6 +10,8 @@
     color: white;
 }
 
+#tray * :hover * {background-color: gray; }
+
 #tray {
     padding-left: 10px;
     padding-right: 10px;
@@ -17,8 +19,9 @@
 }
 
 #tray menu {
+    background-color: rgba(43, 48, 59, 0.5);
     padding-top: 19px;
-    border: none;
+    border: 0px;
 }
 
 #taskbar button {
