@@ -1,0 +1,114 @@
+* {
+    font-weight: bold;
+    font-style: normal;
+    padding: 0px;
+    border: none;
+
+    font-size: 12px;
+    font-family: Inconsolata Font;
+    background-color: transparent;
+    color: white;
+}
+
+#tray {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 0px;
+}
+
+#tray menu {
+    padding-top: 19px;
+    border: none;
+}
+
+#taskbar button {
+    padding-left: 10px;
+}
+
+
+window#waybar {
+
+    opacity: 0.7;
+    border-radius: 0px;
+
+    transition:
+        background-color 0.25s linear,
+        color 0.25s linear,
+        border-color 0.5s linear;
+}
+
+#workspaces {
+    padding: 0px 0px;
+    margin: 0px 5px;
+
+}
+
+#workspaces button {
+    padding: 0px 0px;
+    margin: 0px 5px;
+
+    border-radius: 5px;
+
+
+    transition: all 200ms cubic-bezier(0.68, -0.55, 0.265, 1.55); 
+}
+
+#workspaces button.active {
+    background-color: #11EEAA;
+
+    min-width: 20px;
+    transition: all 400ms cubic-bezier(0.68, -0.55, 0.265, 1.55); 
+}
+
+#window {
+    
+
+    padding-left: 5px;
+    padding-right: 5px;
+
+    transition: all 0.3s ease-in-out;
+}
+
+
+#memory, #cpu, #temperature, #network, #bluetooth {
+    transition: all 0.3s ease-in-out;
+}
+
+
+#cpu:hover,
+#temperature:hover,
+#bluetooth:hover {
+}
+
+
+#network, #bluetooth {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+
+#memory {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+#cpu {
+    padding-right: 10px;
+    padding-left: 5px;
+
+}
+
+#temperature {
+    padding-left: 10px;
+    padding-right: 5px;
+    
+}
+
+
+#clock {
+
+    border-radius: 0px 5px 5px 0px;
+
+    padding-left: 0px;
+    padding-right: 10px;
+}
