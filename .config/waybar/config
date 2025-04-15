@@ -27,7 +27,9 @@
         "hyprland/window",
     ],
     "modules-right": [
-        "group/resources",
+        "memory",
+        "temperature",
+        "cpu",
         "pulseaudio",
         "tray",
         "clock"
@@ -103,12 +105,10 @@
         "calendar": {
                     "mode"          : "month",
                     "mode-mon-col"  : 3,
-                    "weeks-pos"     : "right",
                     "on-scroll"     : 1,
                     "format": {
                               "months":     "{}",
                               "days":       "{}",
-                              "weeks":      "{}",
                               "today":      "<span color='#ff6699'><b><u>{}</u></b></span>"
                               }
                     },
@@ -194,19 +194,5 @@
           ""  // Icon: temperature-full
       ],
       "tooltip": true
-    },
-
-    "group/resources": {
-        "orientation": "inherit",
-        "drawer": {
-            "transition-duration": 500,
-            "children-class": "resources-group",
-            "transition-left-to-right": false
-        },
-        "modules": [
-            "memory",
-            "temperature",
-            "cpu"
-        ]
     },
 }
