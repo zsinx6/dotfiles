@@ -32,7 +32,7 @@
 
     "modules-left": [
         "hyprland/workspaces",
-        //"wlr/taskbar",
+        "wlr/taskbar",
         "privacy",
     ],
     "modules-center": [
@@ -58,7 +58,7 @@
       "on-click": "activate",
       "on-click-middle": "close",
       "active-first": true,
-      // "ignore-list": ["Alacritty"],
+      "ignore-list": ["Spotify"],
       "app_ids-mapping": {
         "firefoxdeveloperedition": "firefox-developer-edition"
       },
@@ -113,7 +113,6 @@
     },
 
     "clock": {
-        "format-alt": "{:%H:%M}  ",
         "format": "{:%A, %B %d, %Y (%R)}",
         "tooltip-format": "<tt><small>{calendar}</small></tt>",
         "calendar": {
@@ -131,7 +130,7 @@
                     "on-scroll-up": "tz_down",
                     "on-scroll-down": "tz_down",
                     "on-scroll-up": "shift_down",
-                    "on-scroll-down": "shift_up"
+                    "on-scroll-down": "shift_up",
                     }
     },
 
@@ -143,7 +142,10 @@
         "format": "{icon}",
         "persistent-workspaces": {
             "*": 5
-        }       
+        },
+        "format-icons": {
+            "active": "",
+        }
     },
 
     "tray": {
@@ -152,7 +154,7 @@
     },
 
     "pulseaudio": {
-        "format": "{volume}% {icon}",
+        "format": "{icon}  : {volume}%",
         "format-bluetooth": "{volume}% {icon}",
         "format-muted": "",
         "format-icons": {
@@ -187,7 +189,7 @@
 
     "memory": {
         "interval": 10,
-        "format": "M: {}%", // Icon: memory
+        "format": "  : {}%", // Icon: memory
         "states": {
             "warning": 70,
             "critical": 90
@@ -198,7 +200,7 @@
     "temperature": {
       "critical-threshold": 90,
       "interval": 30,
-      "format": "{icon} {temperatureC}°C",
+      "format": "{icon} : {temperatureC}°C",
       "format-icons": [
           "", // Icon: temperature-empty
           "", // Icon: temperature-quarter
