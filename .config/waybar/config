@@ -18,7 +18,6 @@
     "position": "top",
 
     "height": 5,
-
     
     "custom/spotify": {
         "format": "{text}",
@@ -27,7 +26,7 @@
         "on-click": "playerctl -p spotify play-pause",
         "on-click-right": "playerctl -p spotify next",
         "on-click-middle": "playerctl -p spotify previous",
-        "exec": "$HOME/.config/waybar/mediaplayer.py 2> /dev/null", // Script in resources/custom_modules folder
+        "exec": "$HOME/.config/waybar/mediaplayer.py --player spotify 2> /dev/null", // Script in resources/custom_modules folder
         "exec-if": "pgrep spotify"
     },
 
