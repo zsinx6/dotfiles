@@ -148,7 +148,7 @@
 
     "tray": {
         "icon-size": 18,
-        "spacing": 5
+        "spacing": 2
     },
 
     "pulseaudio": {
