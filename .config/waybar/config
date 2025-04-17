@@ -19,14 +19,28 @@
 
     "height": 5,
 
+    
+    "custom/spotify": {
+        "format": "{text}",
+        "escape": true,
+        "return-type": "json",
+        "on-click": "playerctl -p spotify play-pause",
+        "on-click-right": "playerctl -p spotify next",
+        "on-click-middle": "playerctl -p spotify previous",
+        "exec": "$HOME/.config/waybar/mediaplayer.py 2> /dev/null", // Script in resources/custom_modules folder
+        "exec-if": "pgrep spotify"
+    },
+
     "modules-left": [
         "hyprland/workspaces",
-        "wlr/taskbar"
+        //"wlr/taskbar",
+        "privacy",
     ],
     "modules-center": [
         "hyprland/window",
     ],
     "modules-right": [
+        "custom/spotify",
         "memory",
         "temperature",
         "cpu",
@@ -35,9 +49,10 @@
         "clock"
     ],
 
+
     "wlr/taskbar": {
       // "format": "{icon}",
-      "format": "{icon} {title:.17}",
+      "format": "{icon} {title:.30}",
       "icon-size": 15,
       "icon-theme": "BeautyLine",
       "tooltip-format": "{title}",
@@ -153,7 +168,6 @@
             "car": "",
             "default": ["", ""]
         },
-        "scroll-step": 1,
         "on-click": "pavucontrol",
         "ignored-sinks": ["Easy Effects Sink"]
     },
@@ -164,7 +178,7 @@
     // -------------------------------------------------------------------------
     "cpu": {
         "interval": 10,
-        "format": "CPU: {usage}%", // Icon: microchip: 
+        "format": "  : {usage}%", // Icon: microchip: 
         "states": {
             "warning": 70,
             "critical": 90
@@ -174,7 +188,7 @@
 
     "memory": {
         "interval": 10,
-        "format": "MEM: {}%", // Icon: memory
+        "format": "M: {}%", // Icon: memory
         "states": {
             "warning": 70,
             "critical": 90
