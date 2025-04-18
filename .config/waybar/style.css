@@ -13,8 +13,7 @@
 
 #tray {
     padding-left: 5px;
-    padding-right: 5px;
-    padding-top: 0px;
+    padding-right: 10px;
 }
 
 #tray menu {
@@ -25,17 +24,22 @@
 #taskbar {
     padding-left: 5px;
 }
+
 #taskbar button {
-    padding-left: 10px;
+    padding-left: 5px;
+}
+
+#custom-firefox {
+    margin-right: 2px;
 }
 
 #custom-spotify {
+    margin-left: 2px;
     padding-right: 2px;
 }
 
 window#waybar {
-
-    opacity: 0.7;
+    opacity: 0.8;
     border-radius: 0px;
 
     transition:
@@ -79,8 +83,7 @@ window#waybar {
 }
 
 #temperature {
-    padding-left: 5px;
-    
+    padding-left: 5px;    
 }
 
 #clock {

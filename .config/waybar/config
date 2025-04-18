@@ -30,42 +30,41 @@
         "exec-if": "pgrep spotify"
     },
 
+    "custom/firefox": {
+        "format": "{text}",
+        "escape": true,
+        "return-type": "json",
+        "on-click": "playerctl -p firefox play-pause",
+        "on-click-right": "playerctl stop",
+        "exec": "$HOME/.config/waybar/mediaplayer.py --player firefox 2> /dev/null", // Script in resources/custom_modules folder
+    },
+
     "modules-left": [
         "hyprland/workspaces",
         "wlr/taskbar",
         "privacy",
-    ],
-    "modules-center": [
         "hyprland/window",
     ],
+    "modules-center": [
+        "clock",
+    ],
     "modules-right": [
+        "custom/firefox",
         "custom/spotify",
-        "memory",
-        "temperature",
-        "cpu",
+        "group/resources",
         "pulseaudio",
         "tray",
-        "clock"
     ],
 
-
     "wlr/taskbar": {
-      // "format": "{icon}",
-      "format": "{icon} {title:.30}",
+      "format": "{icon}",
       "icon-size": 15,
-      "icon-theme": "BeautyLine",
+      //"icon-theme": "BeautyLine",
       "tooltip-format": "{title}",
       "on-click": "activate",
       "on-click-middle": "close",
-      "active-first": true,
-      "ignore-list": ["Spotify"],
-      "app_ids-mapping": {
-        "firefoxdeveloperedition": "firefox-developer-edition"
-      },
-      "rewrite": {
-        "Firefox Web Browser": "Firefox",
-        "(.*) - Discord": "Discord",
-      },
+      //"active-first": true,
+      "ignore-list": ["Transmission"],
     },
 
     "hyprland/window": {
@@ -80,23 +79,23 @@
 
     "privacy": {
 	"icon-spacing": 4,
-	"icon-size": 18,
+	"icon-size": 15,
 	"transition-duration": 250,
 	"modules": [
 		{
 			"type": "screenshare",
 			"tooltip": true,
-			"tooltip-icon-size": 24
+			"tooltip-icon-size": 15
 		},
 		{
 			"type": "audio-out",
 			"tooltip": true,
-			"tooltip-icon-size": 24
+			"tooltip-icon-size": 15
 		},
 		{
 			"type": "audio-in",
 			"tooltip": true,
-			"tooltip-icon-size": 24
+			"tooltip-icon-size": 15
 		}
 	]
 },
@@ -104,16 +103,9 @@
     // -------------------------------------------------------------------------
     // General modules
     // -------------------------------------------------------------------------
-    "clock": {
-        "interval": 20,
-        "format": "  {:%e %b %Y %H:%M}", // Icon: calendar-alt
-        "tooltip": true,
-        "tooltip-format": "<big><tt>{calendar}</tt></big>",
-        "on-click": "swaymsg exec \\$calendar",
-    },
 
     "clock": {
-        "format": "{:%A, %B %d, %Y (%R)}",
+        "format": "{:%a, %d %B %Y | %R}",
         "tooltip-format": "<tt><small>{calendar}</small></tt>",
         "calendar": {
                     "mode"          : "month",
@@ -209,5 +201,19 @@
           ""  // Icon: temperature-full
       ],
       "tooltip": true
+    },
+
+    "group/resources": {
+        "orientation": "inherit",
+        "drawer": {
+            "transition-duration": 500,
+            "children-class": "resources-group",
+            "transition-left-to-right": false
+        },
+        "modules": [
+            "temperature",
+            "memory",
+            "cpu"
+        ]
     },
 }
