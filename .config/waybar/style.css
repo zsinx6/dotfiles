@@ -82,8 +82,20 @@ window#waybar {
     padding-left: 5px;
 }
 
-#temperature {
-    padding-left: 5px;    
+#custom-temps {
+    padding-left: 5px;
+}
+
+#cpu.warning,
+#memory.warning,
+#custom-temps.warning {
+    color: #f5a623;
+}
+
+#cpu.critical,
+#memory.critical,
+#custom-temps.critical {
+    color: #ff5555;
 }
 
 #clock {

@@ -119,8 +119,6 @@
                     },
         "actions":  {
                     "on-click-right": "mode",
-                    "on-scroll-up": "tz_down",
-                    "on-scroll-down": "tz_down",
                     "on-scroll-up": "shift_down",
                     "on-scroll-down": "shift_up",
                     }
@@ -133,7 +131,7 @@
         "all-outputs": false,
         "format": "{icon}",
         "persistent-workspaces": {
-            "*": 5
+            "*": 6
         },
         "format-icons": {
             "active": "",
@@ -189,10 +187,12 @@
         "on-click": "kitty htop"
     },
 
-    "temperature": {
-      "critical-threshold": 90,
-      "interval": 30,
-      "format": "{icon} : {temperatureC}°C",
+    // CPU temp in the bar, CPU + NVIDIA GPU temps in the hover tooltip
+    "custom/temps": {
+      "exec": "$HOME/.config/waybar/scripts/temps.sh",
+      "return-type": "json",
+      "interval": 5,
+      "format": "{icon} : {}",
       "format-icons": [
           "", // Icon: temperature-empty
           "", // Icon: temperature-quarter
@@ -211,7 +211,7 @@
             "transition-left-to-right": false
         },
         "modules": [
-            "temperature",
+            "custom/temps",
             "memory",
             "cpu"
         ]
