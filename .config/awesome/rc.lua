@@ -45,12 +45,9 @@ end
 -- {{{ Autostart windowless processes
 local function run_once(cmd_arr)
   for _, cmd in ipairs(cmd_arr) do
-    findme = cmd
-    firstspace = cmd:find(" ")
-    if firstspace then
-      findme = cmd:sub(0, firstspace - 1)
-    end
-    awful.spawn.with_shell(string.format("pgrep -u $USER -x %s > /dev/null || (%s)", findme, cmd))
+    -- pgrep -x matches the process name, so strip any leading path from the command
+    local name = cmd:match("^%S+"):match("[^/]+$")
+    awful.spawn.with_shell(string.format("pgrep -u $USER -x %s > /dev/null || (%s)", name, cmd))
   end
 end
 
@@ -62,7 +59,7 @@ local chosen_theme = "powerarrow-dark"
 local modkey       = "Mod4"
 local altkey       = "Mod1"
 local terminal     = "alacritty"
-local editor       = os.getenv("EDITOR") or "nano" or "vi"
+local editor       = os.getenv("EDITOR") or "nano"
 local gui_editor   = "gvim"
 local browser      = "firefox"
 
@@ -92,7 +89,7 @@ awful.layout.layouts = {
   --lain.layout.termfair,
   --lain.layout.termfair.center,
 }
-awful.util.taglist_buttons = awful.util.table.join(
+awful.util.taglist_buttons = gears.table.join(
   awful.button({}, 1, function(t) t:view_only() end),
   awful.button({ modkey }, 1, function(t)
     if client.focus then
@@ -106,14 +103,9 @@ awful.util.taglist_buttons = awful.util.table.join(
     end
   end),
   awful.button({}, 4, function(t) awful.tag.viewnext(t.screen) end),
-  awful.button({}, 5, function(t) awful.tag.viewprev(t.screen) end),
-  awful.button({}, 6, function(t) awful.tag.viewprev(t.screen) end),
-  awful.button({}, 7, function(t) awful.tag.viewprev(t.screen) end),
-  awful.button({}, 8, function(t) awful.tag.viewprev(t.screen) end),
-  awful.button({}, 9, function(t) awful.tag.viewprev(t.screen) end)
-
+  awful.button({}, 5, function(t) awful.tag.viewprev(t.screen) end)
 )
-awful.util.tasklist_buttons = awful.util.table.join(
+awful.util.tasklist_buttons = gears.table.join(
   awful.button({}, 1, function(c)
     if c == client.focus then
       c.minimized = true
@@ -126,21 +118,11 @@ awful.util.tasklist_buttons = awful.util.table.join(
       end
       -- This will also un-minimize
       -- the client, if needed
-      client.focus = c
-      c:raise()
+      c:emit_signal("request::activate", "tasklist", { raise = true })
     end
   end),
   awful.button({}, 3, function()
-    local instance = nil
-
-    return function()
-      if instance and instance.wibox.visible then
-        instance:hide()
-        instance = nil
-      else
-        instance = awful.menu.clients({ theme = { width = 250 } })
-      end
-    end
+    awful.menu.client_list({ theme = { width = 250 } })
   end),
   awful.button({}, 4, function()
     awful.client.focus.byidx(1)
@@ -183,8 +165,6 @@ awful.util.mymainmenu = freedesktop.menu.build({
   }
 })
 --menubar.utils.terminal = terminal -- Set the Menubar terminal for applications that require it
---
-app_folders = { "/usr/share/applications/", "~/.local/share/applications/" }
 -- }}}
 
 -- {{{ Screen
@@ -205,7 +185,7 @@ awful.screen.connect_for_each_screen(function(s) beautiful.at_screen_connect(s) 
 -- }}}
 
 -- {{{ Mouse bindings
-root.buttons(awful.util.table.join(
+root.buttons(gears.table.join(
   awful.button({}, 3, function() awful.util.mymainmenu:toggle() end),
   awful.button({}, 4, awful.tag.viewnext),
   awful.button({}, 5, awful.tag.viewprev)
@@ -214,8 +194,7 @@ root.buttons(awful.util.table.join(
 
 -- where can be 'left' 'right' 'top' 'bottom' 'center' 'topleft' 'topright' 'bottomleft' 'bottomright' nil
 local function snap_edge(c, where, geom)
-  local sg       = screen[c.screen].geometry --screen geometry
-  local sw       = screen[c.screen].workarea --screen workarea
+  local sw       = c.screen.workarea --screen workarea
   local workarea = { x_min = sw.x, x_max = sw.x + sw.width, y_min = sw.y, y_max = sw.y + sw.height }
   local cg       = geom or c:geometry()
   local border   = c.border_width
@@ -285,41 +264,41 @@ local function snap_edge(c, where, geom)
 end
 
 -- {{{ Key bindings
-globalkeys = awful.util.table.join(
+local globalkeys = gears.table.join(
 -- Take a screenshot
 -- https://github.com/copycat-killer/dots/blob/master/bin/screenshot
   awful.key({}, "Print",
-    function() awful.util.spawn_with_shell("scrot -u ~/screenshots/%Y-%m-%d-%T-screenshot.png -e 'xclip -selection clipboard -target image/png -i $f'"
-        , false)
-    end),
-  --awful.key({ }, "Print", function() awful.util.spawn_with_shell("gscreenshot -c -f ~/screenshots/%Y-%m-%d-%T-screenshot.png", false) end),
-  awful.key({ modkey, altkey }, "l", function() awful.util.spawn_with_shell("xbacklight -set 0 && i3lock", false) end),
+    function()
+      awful.spawn.with_shell(
+        "scrot -u ~/screenshots/%Y-%m-%d-%T-screenshot.png -e 'xclip -selection clipboard -target image/png -i $f'")
+    end,
+    { description = "screenshot focused window", group = "screenshot" }),
+  --awful.key({ }, "Print", function() awful.spawn.with_shell("gscreenshot -c -f ~/screenshots/%Y-%m-%d-%T-screenshot.png") end),
+  awful.key({ modkey, altkey }, "l", function() awful.spawn.with_shell("xbacklight -set 0 && i3lock") end,
+    { description = "lock screen", group = "awesome" }),
 
   awful.key({ "Shift" }, "Print",
-    function() awful.util.spawn_with_shell("sleep 0.2 && scrot -s ~/screenshots/%Y-%m-%d-%T-screenshot.png -e 'xclip -selection clipboard -target image/png -i $f'"
-        , false)
-    end),
-  awful.key({ modkey }, "Print", function() awful.util.spawn_with_shell("sleep 0.2 && flameshot gui", false) end),
-  --awful.key({ "Shift" }, "Print", function() awful.util.spawn_with_shell("gscreenshot -s -c -f ~/screenshots/%Y-%m-%d-%T-screenshot.png", false) end),
-  awful.key({}, "XF86MonBrightnessDown", function() awful.util.spawn_with_shell("xbacklight -dec 1", false) end),
-  awful.key({}, "XF86MonBrightnessUp", function() awful.util.spawn_with_shell("xbacklight -inc 1", false) end),
+    function()
+      awful.spawn.with_shell(
+        "sleep 0.2 && scrot -s ~/screenshots/%Y-%m-%d-%T-screenshot.png -e 'xclip -selection clipboard -target image/png -i $f'")
+    end,
+    { description = "screenshot selection", group = "screenshot" }),
+  awful.key({ modkey }, "Print", function() awful.spawn.with_shell("sleep 0.2 && flameshot gui") end,
+    { description = "flameshot gui", group = "screenshot" }),
+  --awful.key({ "Shift" }, "Print", function() awful.spawn.with_shell("gscreenshot -s -c -f ~/screenshots/%Y-%m-%d-%T-screenshot.png") end),
+  awful.key({}, "XF86MonBrightnessDown", function() awful.spawn.with_shell("xbacklight -dec 1") end),
+  awful.key({}, "XF86MonBrightnessUp", function() awful.spawn.with_shell("xbacklight -inc 1") end),
 
   -- Hotkeys
   awful.key({ modkey, }, "s", hotkeys_popup.show_help,
     { description = "show help", group = "awesome" }),
-  -- Tag browsing
-  awful.key({ modkey, }, "Left", awful.tag.viewprev,
-    { description = "view previous", group = "tag" }),
-  awful.key({ modkey, }, "Right", awful.tag.viewnext,
-    { description = "view next", group = "tag" }),
+  -- Tag browsing (skips empty tags)
   awful.key({ modkey, }, "Escape", awful.tag.history.restore,
     { description = "go back", group = "tag" }),
-
-  -- Non-empty tag browsing
   awful.key({ modkey }, "Left", function() lain.util.tag_view_nonempty(-1) end,
-    { description = "view  previous nonempty", group = "tag" }),
+    { description = "view previous nonempty", group = "tag" }),
   awful.key({ modkey }, "Right", function() lain.util.tag_view_nonempty(1) end,
-    { description = "view  previous nonempty", group = "tag" }),
+    { description = "view next nonempty", group = "tag" }),
 
   -- Default client focus
   awful.key({ altkey }, "k",
@@ -387,18 +366,23 @@ globalkeys = awful.util.table.join(
         s.mybottomwibox.visible = not s.mybottomwibox.visible
       end
     end
-  end),
+  end, { description = "toggle wibox", group = "awesome" }),
 
   -- On the fly useless gaps change
-  awful.key({ altkey, "Control" }, "+", function() lain.util.useless_gaps_resize(1) end),
-  awful.key({ altkey, "Control" }, "-", function() lain.util.useless_gaps_resize(-1) end),
+  awful.key({ altkey, "Control" }, "+", function() lain.util.useless_gaps_resize(1) end,
+    { description = "increase useless gaps", group = "layout" }),
+  awful.key({ altkey, "Control" }, "-", function() lain.util.useless_gaps_resize(-1) end,
+    { description = "decrease useless gaps", group = "layout" }),
 
   -- Dynamic tagging
-  awful.key({ modkey, "Shift" }, "n", function() lain.util.add_tag() end),
-  awful.key({ modkey, "Shift" }, "r", function() lain.util.rename_tag() end),
+  awful.key({ modkey, "Shift" }, "n", function() lain.util.add_tag() end,
+    { description = "add new tag", group = "tag" }),
+  awful.key({ modkey, "Shift" }, "r", function() lain.util.rename_tag() end,
+    { description = "rename tag", group = "tag" }),
   -- awful.key({ modkey, "Shift" }, "Left", function() lain.util.move_tag(-1) end), -- move to previous tag
   -- awful.key({ modkey, "Shift" }, "Right", function() lain.util.move_tag(1) end), -- move to next tag
-  awful.key({ modkey, "Shift" }, "d", function() lain.util.delete_tag() end),
+  awful.key({ modkey, "Shift" }, "d", function() lain.util.delete_tag() end,
+    { description = "delete tag", group = "tag" }),
 
   -- Standard program
   awful.key({ modkey, }, "Return", function() awful.spawn(terminal) end,
@@ -430,8 +414,7 @@ globalkeys = awful.util.table.join(
       local c = awful.client.restore()
       -- Focus restored client
       if c then
-        client.focus = c
-        c:raise()
+        c:emit_signal("request::activate", "key.unminimize", { raise = true })
       end
     end,
     { description = "restore minimized", group = "client" }),
@@ -445,35 +428,38 @@ globalkeys = awful.util.table.join(
   --awful.key({ altkey, }, "w", function () if beautiful.weather then beautiful.weather.show(7) end end),
 
   -- ALSA volume control
+  -- os.execute blocks the whole WM until amixer returns; spawn asynchronously
+  -- and refresh the widget once the command has finished.
   awful.key({}, "XF86AudioRaiseVolume",
     function()
-      os.execute(string.format("amixer -q set %s 5%%+ unmute", beautiful.volume.channel))
-      beautiful.volume.update()
+      awful.spawn.easy_async(string.format("amixer -q set %s 5%%+ unmute", beautiful.volume.channel),
+        function() beautiful.volume.update() end)
     end),
   awful.key({}, "XF86AudioLowerVolume",
     function()
-      os.execute(string.format("amixer -q set %s 5%%- unmute", beautiful.volume.channel))
-      beautiful.volume.update()
+      awful.spawn.easy_async(string.format("amixer -q set %s 5%%- unmute", beautiful.volume.channel),
+        function() beautiful.volume.update() end)
     end),
   awful.key({}, "XF86AudioMute",
     function()
-      os.execute(string.format("amixer -q set %s toggle", beautiful.volume.togglechannel or beautiful.volume.channel))
-      beautiful.volume.update()
+      awful.spawn.easy_async(
+        string.format("amixer -q set %s toggle", beautiful.volume.togglechannel or beautiful.volume.channel),
+        function() beautiful.volume.update() end)
     end),
   awful.key({ altkey, "Control" }, "m",
     function()
-      os.execute(string.format("amixer -q set %s 100%%", beautiful.volume.channel))
-      beautiful.volume.update()
+      awful.spawn.easy_async(string.format("amixer -q set %s 100%%", beautiful.volume.channel),
+        function() beautiful.volume.update() end)
     end),
   awful.key({ altkey, "Control" }, "0",
     function()
-      os.execute(string.format("amixer -q set %s 0%%", beautiful.volume.channel))
-      beautiful.volume.update()
+      awful.spawn.easy_async(string.format("amixer -q set %s 0%%", beautiful.volume.channel),
+        function() beautiful.volume.update() end)
     end),
 
-  awful.key({}, "XF86AudioPlay", function() awful.util.spawn_with_shell("playerctl play-pause", false) end),
-  awful.key({}, "XF86AudioNext", function() awful.util.spawn_with_shell("playerctl next", false) end),
-  awful.key({}, "XF86AudioPrev", function() awful.util.spawn_with_shell("playerctl previous", false) end),
+  awful.key({}, "XF86AudioPlay", function() awful.spawn.with_shell("playerctl play-pause") end),
+  awful.key({}, "XF86AudioNext", function() awful.spawn.with_shell("playerctl next") end),
+  awful.key({}, "XF86AudioPrev", function() awful.spawn.with_shell("playerctl previous") end),
 
   -- MPD control
   awful.key({ altkey, "Control" }, "Up",
@@ -510,13 +496,18 @@ globalkeys = awful.util.table.join(
         end),
 --]]
   -- Copy primary to clipboard (terminals to gtk)
-  awful.key({ modkey }, "c", function() awful.spawn("xsel | xsel -i -b") end),
+  -- (needs a shell: awful.spawn does not understand pipes)
+  awful.key({ modkey }, "c", function() awful.spawn.with_shell("xsel | xsel -i -b") end,
+    { description = "copy primary to clipboard", group = "hotkeys" }),
   -- Copy clipboard to primary (gtk to terminals)
-  awful.key({ modkey }, "v", function() awful.spawn("xsel -b | xsel") end),
+  awful.key({ modkey }, "v", function() awful.spawn.with_shell("xsel -b | xsel") end,
+    { description = "copy clipboard to primary", group = "hotkeys" }),
 
   -- User programs
-  awful.key({ modkey }, "e", function() awful.spawn(gui_editor) end),
-  awful.key({ modkey }, "q", function() awful.spawn(browser) end),
+  awful.key({ modkey }, "e", function() awful.spawn(gui_editor) end,
+    { description = "run gui editor", group = "launcher" }),
+  awful.key({ modkey }, "q", function() awful.spawn(browser) end,
+    { description = "run browser", group = "launcher" }),
 
   -- Default
   -- Menubar
@@ -550,23 +541,21 @@ globalkeys = awful.util.table.join(
 
 
   awful.key({ modkey, altkey, "Shift" }, "End", function()
-
-    local scr = awful.screen.focused()
     awful.prompt.run({ prompt = "Power Off (type 'yes' to confirm)? " },
       awful.screen.focused().mypromptbox.widget,
       function(t)
         if string.lower(t) == 'yes' then
           awesome.emit_signal("exit", nil)
-          awful.util.spawn("poweroff")
+          awful.spawn("poweroff")
         elseif string.lower(t) == 'reboot' then
           awesome.emit_signal("exit", nil)
-          awful.util.spawn("reboot")
+          awful.spawn("reboot")
         elseif string.lower(t) == 'hibernate' then
-          awful.util.spawn("systemctl hibernate")
+          awful.spawn("systemctl hibernate")
         elseif string.lower(t) == 'suspend' then
-          awful.util.spawn("systemctl suspend")
+          awful.spawn("systemctl suspend")
         elseif string.lower(t) == 'both' then
-          awful.util.spawn("systemctl hybrid-sleep")
+          awful.spawn("systemctl hybrid-sleep")
         end
       end,
       function(t, p, n)
@@ -576,27 +565,25 @@ globalkeys = awful.util.table.join(
     { description = "shutdown", group = "launcher" }),
 
   awful.key({ modkey, altkey, "Shift" }, "m", function()
-
-    local scr = awful.screen.focused()
     awful.prompt.run({ prompt = "which monitor? " },
       awful.screen.focused().mypromptbox.widget,
       function(t)
         if string.lower(t) == 'v' then
-          awful.util.spawn_with_shell("sleep 0.5 && xrandr --output eDP1 --primary --output DP1 --auto --right-of eDP1")
+          awful.spawn.with_shell("sleep 0.5 && xrandr --output eDP1 --primary --output DP1 --auto --right-of eDP1")
         elseif string.lower(t) == 'h' then
-          awful.util.spawn_with_shell("sleep 0.5 && xrandr --output eDP1 --primary --output HDMI2 --auto --right-of eDP1")
+          awful.spawn.with_shell("sleep 0.5 && xrandr --output eDP1 --primary --output HDMI2 --auto --right-of eDP1")
         elseif string.lower(t) == 'x' then
-          awful.util.spawn_with_shell("sleep 0.5 && xrandr --output DP1 --auto --off")
+          awful.spawn.with_shell("sleep 0.5 && xrandr --output DP1 --auto --off")
         elseif string.lower(t) == 'y' then
-          awful.util.spawn_with_shell("sleep 0.5 && xrandr --output HDMI2 --auto --off")
+          awful.spawn.with_shell("sleep 0.5 && xrandr --output HDMI2 --auto --off")
         elseif string.lower(t) == 'o' then
-          awful.util.spawn_with_shell("sleep 0.5 && xrandr --output HDMI2 --primary --auto --output eDP1 --auto --off")
+          awful.spawn.with_shell("sleep 0.5 && xrandr --output HDMI2 --primary --auto --output eDP1 --auto --off")
         elseif string.lower(t) == 'f' then
-          awful.util.spawn_with_shell("sleep 0.5 && xrandr --output eDP1 --auto --primary --output HDMI2 --auto --off")
+          awful.spawn.with_shell("sleep 0.5 && xrandr --output eDP1 --auto --primary --output HDMI2 --auto --off")
         end
       end,
       function(t, p, n)
-        return awful.completion.generic(t, p, n, { 'no', 'NO', 'yes', 'YES', 'reboot' })
+        return awful.completion.generic(t, p, n, { 'v', 'h', 'x', 'y', 'o', 'f' })
       end)
   end,
     { description = "change screen layout", group = "launcher" }),
@@ -614,8 +601,9 @@ globalkeys = awful.util.table.join(
 
 )
 
-clientkeys = awful.util.table.join(
-  awful.key({ altkey, "Shift" }, "m", lain.util.magnify_client),
+local clientkeys = gears.table.join(
+  awful.key({ altkey, "Shift" }, "m", lain.util.magnify_client,
+    { description = "magnify client", group = "client" }),
   awful.key({ modkey, }, "f",
     function(c)
       c.fullscreen = not c.fullscreen
@@ -645,17 +633,21 @@ clientkeys = awful.util.table.join(
       c:raise()
     end,
     { description = "maximize", group = "client" }),
-  awful.key({ modkey, "Shift" }, "Down", function(c) snap_edge(c, 'bottom') end),
-  awful.key({ modkey, "Shift" }, "Left", function(c) snap_edge(c, 'left') end),
-  awful.key({ modkey, "Shift" }, "Right", function(c) snap_edge(c, 'right') end),
-  awful.key({ modkey, "Shift" }, "Up", function(c) snap_edge(c, 'top') end)
+  awful.key({ modkey, "Shift" }, "Down", function(c) snap_edge(c, 'bottom') end,
+    { description = "snap to bottom edge", group = "client" }),
+  awful.key({ modkey, "Shift" }, "Left", function(c) snap_edge(c, 'left') end,
+    { description = "snap to left edge", group = "client" }),
+  awful.key({ modkey, "Shift" }, "Right", function(c) snap_edge(c, 'right') end,
+    { description = "snap to right edge", group = "client" }),
+  awful.key({ modkey, "Shift" }, "Up", function(c) snap_edge(c, 'top') end,
+    { description = "snap to top edge", group = "client" })
 )
 
 -- Bind all key numbers to tags.
 -- Be careful: we use keycodes to make it works on any keyboard layout.
 -- This should map on the top row of your keyboard, usually 1 to 9.
 for i = 1, 9 do
-  globalkeys = awful.util.table.join(globalkeys,
+  globalkeys = gears.table.join(globalkeys,
     -- View tag only.
     awful.key({ modkey }, "#" .. i + 9,
       function()
@@ -701,10 +693,18 @@ for i = 1, 9 do
   )
 end
 
-clientbuttons = awful.util.table.join(
-  awful.button({}, 1, function(c) client.focus = c; c:raise() end),
-  awful.button({ modkey }, 1, awful.mouse.client.move),
-  awful.button({ modkey }, 3, awful.mouse.client.resize))
+local clientbuttons = gears.table.join(
+  awful.button({}, 1, function(c)
+    c:emit_signal("request::activate", "mouse_click", { raise = true })
+  end),
+  awful.button({ modkey }, 1, function(c)
+    c:emit_signal("request::activate", "mouse_click", { raise = true })
+    awful.mouse.client.move(c)
+  end),
+  awful.button({ modkey }, 3, function(c)
+    c:emit_signal("request::activate", "mouse_click", { raise = true })
+    awful.mouse.client.resize(c)
+  end))
 
 -- Set keys
 root.keys(globalkeys)
@@ -761,15 +761,13 @@ client.connect_signal("request::titlebars", function(c)
 
   -- Default
   -- buttons for the titlebar
-  local buttons = awful.util.table.join(
+  local buttons = gears.table.join(
     awful.button({}, 1, function()
-      client.focus = c
-      c:raise()
+      c:emit_signal("request::activate", "titlebar", { raise = true })
       awful.mouse.client.move(c)
     end),
     awful.button({}, 3, function()
-      client.focus = c
-      c:raise()
+      c:emit_signal("request::activate", "titlebar", { raise = true })
       awful.mouse.client.resize(c)
     end)
   )
@@ -804,17 +802,21 @@ end)
 client.connect_signal("mouse::enter", function(c)
   if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
       and awful.client.focus.filter(c) then
-    client.focus = c
+    c:emit_signal("request::activate", "mouse_enter", { raise = false })
   end
 end)
 
 -- No border for maximized clients
+local function update_border_width(c)
+  c.border_width = c.maximized and 0 or beautiful.border_width
+end
+
+client.connect_signal("property::maximized", update_border_width)
+
 client.connect_signal("focus",
   function(c)
-    if c.maximized then -- no borders if only 1 client visible
-      c.border_width = 0
-    elseif #awful.screen.focused().clients > 1 then
-      c.border_width = beautiful.border_width
+    update_border_width(c)
+    if not c.maximized and #awful.screen.focused().clients > 1 then
       c.border_color = beautiful.border_focus
     end
   end)
