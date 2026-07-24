@@ -192,14 +192,7 @@
       "exec": "$HOME/.config/waybar/scripts/temps.sh",
       "return-type": "json",
       "interval": 5,
-      "format": "{icon} : {}",
-      "format-icons": [
-          "", // Icon: temperature-empty
-          "", // Icon: temperature-quarter
-          "", // Icon: temperature-half
-          "", // Icon: temperature-three-quarters
-          ""  // Icon: temperature-full
-      ],
+      "format": "{text}",
       "tooltip": true
     },
 

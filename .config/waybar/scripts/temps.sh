@@ -51,5 +51,10 @@ fi
 tooltip="CPU: ${cpu_temp}°C"
 [ -n "$gpu_temp" ] && tooltip="${tooltip}\nGPU: ${gpu_temp}°C"
 
-printf '{"text": "%s°C", "tooltip": "%s", "percentage": %s, "class": "%s"}\n' \
-    "$cpu_temp" "$tooltip" "$cpu_temp" "$class"
+# Thermometer icon: empty/quarter/half/three-quarters/full, one per 20°C step.
+icons=($'\uf2cb' $'\uf2ca' $'\uf2c9' $'\uf2c8' $'\uf2c7')
+idx=$((cpu_temp / 20))
+[ "$idx" -gt 4 ] && idx=4
+
+printf '{"text": "%s : %s°C", "tooltip": "%s", "class": "%s"}\n' \
+    "${icons[idx]}" "$cpu_temp" "$tooltip" "$class"
